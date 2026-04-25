@@ -18,8 +18,8 @@ form.addEventListener('submit', function(e) {
         alert('All values must be numeric');
         return;
     }
-    if(arrivalTime < 0 || burstTime < 0 || priority < 0){
-        alert('All values must be positive')
+    if(arrivalTime < 0 || burstTime <= 0 || priority < 0){
+        alert('All values must be positive and burst time must be more than 0');
         return;
     }
 
