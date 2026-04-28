@@ -30,11 +30,19 @@ form.addEventListener("submit", function (e) {
         <td>${arrivalTime}</td>
         <td>${burstTime}</td>
         <td>${priority}</td>
-        <td><button type="button" class="delete-btn" onclick="this.closest('tr').remove()">Delete</button></td>
+        <td><button type="button" class="delete-btn"onclick="deleteRow(this)">Delete</button></td>
     `;
   tbody.appendChild(row);
   form.reset();
 });
+function deleteRow(btn) {
+  btn.closest("tr").remove();
+  const rows = tbody.getElementsByTagName("tr");
+  count = 1;
+  for (let r of rows) {
+    r.cells[0].innerHTML = "P" + count++;
+  }
+}
 
 // --------------------------PUT YOUR CODE BELOW THIS--------------------------------------------------
 //Below is the logic for the SRTF algorithm and the Gantt chart
@@ -71,10 +79,15 @@ function addProcess(process = []) {
     });
   }
 }
+let srtfCompletionTimes = {};
+let srtfFirstResponse = {};
+
 function srtf() {
+  srtfCompletionTimes = {};
+  srtfFirstResponse = {};
+
   while (completionTime < numberOfProcesses) {
-    let shortest = -1,
-      minRem = Infinity;
+    let shortest = -1, minRem = Infinity;
     for (let i = 0; i < numberOfProcesses; i++) {
       if (
         !processes[i].done &&
@@ -90,11 +103,16 @@ function srtf() {
       currenttime++;
       continue;
     }
+    
+    if (srtfFirstResponse[processes[shortest].name] === undefined) {
+      srtfFirstResponse[processes[shortest].name] = currenttime;
+    }
     track.push(processes[shortest].name);
     processes[shortest].remainingtime--;
     currenttime++;
     if (processes[shortest].remainingtime == 0) {
       processes[shortest].done = true;
+      srtfCompletionTimes[processes[shortest].name] = currenttime;
       completionTime++;
     }
   }
@@ -123,24 +141,7 @@ function DisplayGanttChart() {
   }
 }
 
-btnstartsim.addEventListener("click", function () {
-  processes = [];
-  track = [];
-  gantt = [];
-  i = 0;
-  completionTime = 0;
-  currenttime = 0;
-  document.getElementById("srtfrow").innerHTML = "";
-  numberOfProcesses = TableOfProcesses.rows.length;
-  if (numberOfProcesses == 0) {
-    alert("Please add at least one process to start the simulation");
-    return;
-  }
-  addProcess(processes);
-  srtf();
-  EnterDataToGanttChart();
-  DisplayGanttChart();
-});
+
 
 // --------------------------PUT YOUR CODE BELOW THIS--------------------------------------------------
 // -------------------------- Priority Scheduling Logic --------------------------
@@ -219,6 +220,47 @@ btnstartsim.addEventListener("click", function () {
   srtf();
   EnterDataToGanttChart();
   DisplayGanttChart();
+  displaySRTFStats();
   priorityScheduling();
 });
 // --------------------------PUT YOUR CODE BELOW THIS--------------------------------------------------
+function displaySRTFStats() {
+  const tbody = document.getElementById("srtf-stats-body");
+  tbody.innerHTML = "";
+  let totalWT = 0, totalTAT = 0, totalRT = 0;
+
+  for (let i = 0; i < processes.length; i++) {
+    const p = processes[i];
+    const ct = srtfCompletionTimes[p.name];
+    const tat = ct - p.arrival;
+    const wt = tat - p.burst;
+    const rt = srtfFirstResponse[p.name] - p.arrival;
+
+    totalWT += wt;
+    totalTAT += tat;
+    totalRT += rt;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${p.name}</td>
+      <td>${p.arrival}</td>
+      <td>${p.burst}</td>
+      <td>${ct}</td>
+      <td>${tat}</td>
+      <td>${wt}</td>
+      <td>${rt}</td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  const n = processes.length;
+  const avgRow = document.createElement("tr");
+  avgRow.className = "avg-row";
+  avgRow.innerHTML = `
+    <td colspan="4">Average</td>
+    <td>${(totalTAT / n).toFixed(2)}</td>
+    <td>${(totalWT / n).toFixed(2)}</td>
+    <td>${(totalRT / n).toFixed(2)}</td>
+  `;
+  tbody.appendChild(avgRow);
+}

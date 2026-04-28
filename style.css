@@ -136,3 +136,136 @@
 .chart-table td:contains("Idle") {
   background-color: #7f8c8d;
 }
+
+.gantt-chart h1 {
+  display: flex;
+  justify-content: center;
+}
+.chart {
+  display: flex;
+  justify-content: center;
+}
+.gantt-chart table {
+  width: fit-content;
+  border: 1px solid #000;
+}
+.gantt-chart td {
+  background-color: #4a4a4a;
+  color: white;
+  border: 1px solid #000;
+  text-align: center;
+  position: relative;
+  transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -ms-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+}
+.gantt-chart td:hover {
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
+}
+.add-btn {
+  background-color: #4a4a4a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.delete-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#Start-sim-btn {
+  background-color: green;
+  font-size: 15px;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#Start-sim-btn:hover {
+  background-color: darkgreen;
+}
+
+/*---------------------------------------------------------------------------------*/
+.chart-container {
+  width: 90%;
+  margin: 20px auto;
+  overflow-x: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background: #fdfdfd;
+}
+
+.chart-table {
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.chart-table td {
+  min-width: 50px;
+  height: 60px;
+  font-size: 14px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.chart-table td:contains("Idle") {
+  background-color: #7f8c8d;
+}
+
+.stats-section {
+  padding: 30px 40px;
+}
+
+.stats-section h1 {
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.stats-container {
+  overflow-x: auto;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.stats-table th,
+.stats-table td {
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.stats-table thead {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.stats-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.stats-table tbody tr:hover {
+  background-color: #ddeeff;
+}
+
+.avg-row {
+  font-weight: bold;
+  background-color: #e8f4e8 !important;
+}
+
