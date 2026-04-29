@@ -157,8 +157,7 @@ function priorityScheduling() {
       done: false,
     });
   }
-
-  let pTrack = [];
+   pTrack = [];
   let pCurrentTime = 0;
   let pCompletionTime = 0;
 
@@ -222,6 +221,7 @@ btnstartsim.addEventListener("click", function () {
   DisplayGanttChart();
   displaySRTFStats();
   priorityScheduling();
+  displayPriorityStats();
 });
 // --------------------------PUT YOUR CODE BELOW THIS--------------------------------------------------
 function displaySRTFStats() {
@@ -263,4 +263,51 @@ function displaySRTFStats() {
     <td>${(totalRT / n).toFixed(2)}</td>
   `;
   tbody.appendChild(avgRow);
+}
+//___________________________________________________________________________
+function displayPriorityStats() {
+  const tbody = document.getElementById("priorty-stats-body");
+  tbody.innerHTML = "";
+  let totalWT = 0, totalTAT = 0, totalRT = 0;
+
+  for (let i = 0; i < numberOfProcesses; i++) {
+    let name = TableOfProcesses.rows[i].cells[0].innerHTML;
+    let arrival = parseInt(TableOfProcesses.rows[i].cells[1].innerHTML);
+    let burst = parseInt(TableOfProcesses.rows[i].cells[2].innerHTML);
+
+
+    let ct = pTrack.lastIndexOf(name) + 1; 
+    let firstOccur = pTrack.indexOf(name); 
+    let rt = firstOccur - arrival;         
+    let tat = ct - arrival;               
+    let wt = tat - burst;                  
+
+    totalWT += wt;
+    totalTAT += tat;
+    totalRT += rt;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${name}</td>
+      <td>${arrival}</td>
+      <td>${burst}</td>
+      <td>${ct}</td>
+      <td>${tat}</td>
+      <td>${wt}</td>
+      <td>${rt}</td>`
+    ;
+    tbody.appendChild(row);
+  }
+
+  if (numberOfProcesses > 0) {
+    const avgRow = document.createElement("tr");
+    avgRow.innerHTML =` 
+      <td colspan="4" style="font-weight:bold">Average</td>
+      <td style="font-weight:bold">${(totalTAT / numberOfProcesses).toFixed(2)}</td>
+      <td style="font-weight:bold">${(totalWT / numberOfProcesses).toFixed(2)}</td>
+      <td style="font-weight:bold">${(totalRT / numberOfProcesses).toFixed(2)}</td>
+      `
+    ;
+    tbody.appendChild(avgRow);
+  }
 }
