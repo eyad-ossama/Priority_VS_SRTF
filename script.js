@@ -311,3 +311,115 @@ function displayPriorityStats() {
     tbody.appendChild(avgRow);
   }
 }
+/*---------------------- Final Conclusion & Comparison Section -----------------------------*/
+function getLastRowAverage(tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody || tbody.rows.length === 0) return null;
+  return tbody.rows[tbody.rows.length - 1];
+}
+
+function displayComparison() {
+  const srtfAvgRow = getLastRowAverage("srtf-stats-body");
+  const priAvgRow = getLastRowAverage("priorty-stats-body");
+
+  if (!srtfAvgRow || !priAvgRow) return;
+
+  const srtfAvgTAT = parseFloat(srtfAvgRow.cells[1].textContent);
+  const srtfAvgWT = parseFloat(srtfAvgRow.cells[2].textContent);
+  const srtfAvgRT = parseFloat(srtfAvgRow.cells[3].textContent);
+
+  const priAvgTAT = parseFloat(priAvgRow.cells[1].textContent);
+  const priAvgWT = parseFloat(priAvgRow.cells[2].textContent);
+  const priAvgRT = parseFloat(priAvgRow.cells[3].textContent);
+
+  const wtWinner =
+    srtfAvgWT < priAvgWT ? "SRTF" :
+    priAvgWT < srtfAvgWT ? "Priority" :
+    "Both algorithms (equal)";
+
+  const rtWinner =
+    srtfAvgRT < priAvgRT ? "SRTF" :
+    priAvgRT < srtfAvgRT ? "Priority" :
+    "Both algorithms (equal)";
+
+  const tatWinner =
+    srtfAvgTAT < priAvgTAT ? "SRTF" :
+    priAvgTAT < srtfAvgTAT ? "Priority" :
+    "Both algorithms (equal)";
+
+    const srtfTotal = srtfAvgWT + srtfAvgRT + srtfAvgTAT;
+const priTotal  = priAvgWT  + priAvgRT  + priAvgTAT;
+
+const recommendation =
+  srtfTotal < priTotal ? "SRTF" :
+  priTotal < srtfTotal ? "Priority" :
+  "Either algorithm";
+
+
+document.getElementById("q1").innerHTML = `
+  <span class="question-text">1. Which algorithm produced the lower average waiting time?</span>
+  <span class="answer-text">➜ ${wtWinner} had the lower average waiting time (SRTF: ${srtfAvgWT.toFixed(2)}, Priority: ${priAvgWT.toFixed(2)}).</span>`;
+
+document.getElementById("q2").innerHTML = `
+  <span class="question-text">2. Which algorithm produced the lower average response time?</span>
+  <span class="answer-text">➜ ${rtWinner} had the lower average response time (SRTF: ${srtfAvgRT.toFixed(2)}, Priority: ${priAvgRT.toFixed(2)}).</span>`;
+
+document.getElementById("q3").innerHTML = `
+  <span class="question-text">3. Did priority values improve treatment of urgent processes?</span>
+  <span class="answer-text">➜ Yes. Priority scheduling gives urgent processes better service based on their assigned priority value.</span>`;
+
+document.getElementById("q4").innerHTML = `
+  <span class="question-text">4. Did SRTF favor short jobs more aggressively?</span>
+  <span class="answer-text">➜ Yes. SRTF always preempts in favor of the shortest remaining time, so short jobs are served earlier.</span>`;
+
+document.getElementById("q5").innerHTML = `
+  <span class="question-text">5. Which algorithm would you recommend for the tested workload, and why?</span>
+  <span class="answer-text">➜ ${
+    recommendation === "Either algorithm" 
+    ? "Either algorithm can be recommended, since both performed equally on this workload." 
+    : `${recommendation} is recommended because it achieved better overall average performance (WT + RT + TAT) on this workload.`
+  }</span>`;
+
+document.getElementById("f1").innerHTML = `
+  <span class="question-text">1. Which algorithm performed better?</span>
+  <span class="answer-text">➜ ${recommendation === "Either algorithm" 
+    ? "Both algorithms performed equally on this dataset." 
+    : `${recommendation} performed better on the selected dataset.`}</span>`;
+
+document.getElementById("f2").innerHTML = `
+  <span class="question-text">2. Which metrics were better under each algorithm?</span>
+  <span class="answer-text">➜ SRTF: Avg WT=${srtfAvgWT.toFixed(2)}, TAT=${srtfAvgTAT.toFixed(2)}, RT=${srtfAvgRT.toFixed(2)} | Priority: Avg WT=${priAvgWT.toFixed(2)}, TAT=${priAvgTAT.toFixed(2)}, RT=${priAvgRT.toFixed(2)}.</span>`;
+
+document.getElementById("f3").innerHTML = `
+  <span class="question-text">3. What is the main trade-off?</span>
+  <span class="answer-text">➜ Efficiency vs policy: SRTF favors short jobs aggressively, while Priority respects urgency levels regardless of burst time.</span>`;
+
+document.getElementById("f4").innerHTML = `
+  <span class="question-text">4. Which algorithm appeared fairer in practice?</span>
+  <span class="answer-text">➜ Priority is fairer for urgent tasks; SRTF is fairer for short jobs. Fairness depends on the workload context.</span>`;
+
+}
+
+
+btnstartsim.addEventListener("click", function () {
+  setTimeout(displayComparison, 0);
+});
+
+// reset button logic  
+document.getElementById("reset-btn").addEventListener("click", function () {
+  tbody.innerHTML = "";
+  count = 1;
+  document.getElementById("srtfrow").innerHTML = "";
+  document.getElementById("priorityRow").innerHTML = "";
+  document.getElementById("srtf-stats-body").innerHTML = "";
+  document.getElementById("priorty-stats-body").innerHTML = "";
+  ["q1","q2","q3","q4","q5","f1","f2","f3","f4"].forEach(id => {
+    document.getElementById(id).innerHTML = "";
+  });
+  processes = []; track = []; gantt = [];
+  i = 0; completionTime = 0; currenttime = 0;
+  numberOfProcesses = 0;
+  srtfCompletionTimes = {}; srtfFirstResponse = {};
+  pTrack = [];
+  form.reset();
+});
